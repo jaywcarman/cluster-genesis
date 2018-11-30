@@ -55,10 +55,10 @@ if [[ "$1" == "deploy" ]] && ([[ "$2" == "-a" ]] || [[ "$2" == "--all" ]] || \
         exit
     fi
 
-    sudo env "PATH=$PATH" gen.py validate --cluster-hardware $@
-    if [ $? -ne 0 ]; then
-        exit
-    fi
+    #~# sudo env "PATH=$PATH" gen.py validate --cluster-hardware $@
+    #~# if [ $? -ne 0 ]; then
+    #~#     exit
+    #~# fi
 
     gen.py config --create-container $@
     if [ $? -ne 0 ]; then

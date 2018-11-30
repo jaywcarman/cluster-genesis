@@ -32,7 +32,8 @@ import lib.logger as logger
 
 
 URL = 'https://github.com/cobbler/cobbler.git'
-BRANCH = 'release28'
+BRANCH = 'master'
+COMMIT = '59b1f1995881d815b9e6ed221c08147f47f3e980'
 
 TFTPBOOT = '/tftpboot'
 DNSMASQ_TEMPLATE = '/etc/cobbler/dnsmasq.template'
@@ -41,17 +42,21 @@ COBBLER_CONF_ORIG = '/etc/cobbler/cobbler.conf'
 COBBLER_CONF = '/etc/apache2/conf-available/cobbler.conf'
 COBBLER_WEB_CONF_ORIG = '/etc/cobbler/cobbler_web.conf'
 COBBLER_WEB_CONF = '/etc/apache2/conf-available/cobbler_web.conf'
-COBBLER_WEB_SETTINGS = '/usr/local/share/cobbler/web/settings.py'
+COBBLER_WEB_SETTINGS = '/usr/local/lib/python2.7/dist-packages/cobbler/web/settings.py'
 WEBUI_SESSIONS = '/var/lib/cobbler/webui_sessions'
 COBBLER_SETTINGS = '/etc/cobbler/settings'
-PXEDEFAULT_TEMPLATE = '/etc/cobbler/pxe/pxedefault.template'
-KICKSTART_DONE = '/var/lib/cobbler/snippets/kickstart_done'
+PXEDEFAULT_TEMPLATE = '/etc/cobbler/boot_loader_conf/pxedefault.template'
 ROOT_AUTH_KEYS = '/root/.ssh/authorized_keys'
 WWW_AUTH_KEYS = '/var/www/html/authorized_keys'
 NTP_CONF = '/etc/ntp.conf'
 COBBLER = '/usr/local/bin/cobbler'
 LOCAL_PY_DIST_PKGS = '/usr/local/lib/python2.7/dist-packages'
 PY_DIST_PKGS = '/usr/lib/python2.7/dist-packages'
+LOCAL_COBBLER_PKGS = '/usr/local/share/cobbler'
+COBBLER_PKGS = '/usr/share/cobbler'
+SYSLINUX_LDLINUX = '/usr/lib/syslinux/modules/bios/ldlinux.c32'
+COBBLER_LDLINUX = '/var/lib/cobbler/loaders/ldlinux.c32'
+GENDERS = '/etc/genders'
 INITD = '/etc/init.d/'
 APACHE2_CONF = '/etc/apache2/apache2.conf'
 MANAGE_DNSMASQ = '/opt/cobbler/cobbler/modules/manage_dnsmasq.py'
@@ -95,6 +100,7 @@ def cobbler_install(config_path=None):
     # Clone cobbler github repo
     cobbler_url = URL
     cobbler_branch = BRANCH
+    cobbler_commit = COMMIT
     install_dir = gen.get_cobbler_install_dir()
     if os.path.exists(install_dir):
         log.info(
@@ -108,6 +114,11 @@ def cobbler_install(config_path=None):
     log.info(
         "Cobbler branch \'%s\' cloned into \'%s\'" %
         (repo.active_branch, repo.working_dir))
+    if cobbler_commit is not None:
+        working_branch = repo.create_head('power_up', cobbler_commit)
+        repo.head.reference = working_branch
+        assert not repo.head.is_detached
+        repo.head.reset(index=True, working_tree=True)
 
     # Modify Cobbler scrpit that write DHCP reservations so that the
     #   lease time is included.
@@ -137,7 +148,6 @@ def cobbler_install(config_path=None):
     util.backup_file(COBBLER_WEB_CONF_ORIG)
     util.backup_file(COBBLER_SETTINGS)
     util.backup_file(PXEDEFAULT_TEMPLATE)
-    util.backup_file(KICKSTART_DONE)
     util.backup_file(NTP_CONF)
     util.backup_file(APACHE2_CONF)
 
@@ -232,21 +242,25 @@ def cobbler_install(config_path=None):
                        'default_password_crypted: '
                        '$1$clusterp$/gd3ep3.36A2808GGdHUz.')
 
-    # Create link to
+    # Create links from directories in /usr/local/ but needed in /usr/
     if not os.path.exists(PY_DIST_PKGS):
-        util.bash_cmd('ln -s %s/cobbler %s' %
-                      (LOCAL_PY_DIST_PKGS, PY_DIST_PKGS))
+        util.bash_cmd(f'ln -s {LOCAL_PY_DIST_PKGS}/cobbler {PY_DIST_PKGS})')
+    if not os.path.exists(COBBLER_PKGS):
+        util.bash_cmd(f'ln -s {LOCAL_COBBLER_PKGS} {COBBLER_PKGS}')
+
+    # Create 'ldlinux.c32' link from /usr/lib/syslinux to /usr/lib/cobbler
+    if not os.path.exists(COBBLER_LDLINUX):
+        util.bash_cmd(f'ln -s {SYSLINUX_LDLINUX} {COBBLER_LDLINUX}')
+
+    # Touch /etc/genders if it does not exist
+    if not os.path.exists(GENDERS):
+        util.bash_cmd(f'touch {GENDERS}')
 
     # Set PXE timeout to maximum
     util.replace_regex(PXEDEFAULT_TEMPLATE, r'TIMEOUT \d+',
                        'TIMEOUT 35996')
     util.replace_regex(PXEDEFAULT_TEMPLATE, r'TOTALTIMEOUT \d+',
                        'TOTALTIMEOUT 35996')
-
-    # Fix line break escape in kickstart_done snippet
-    util.replace_regex(KICKSTART_DONE, "\\\\nwget", "wget")
-    util.replace_regex(KICKSTART_DONE, "\$saveks", "$saveks + \"; \\\\\\\"\n")
-    util.replace_regex(KICKSTART_DONE, "\$runpost", "$runpost + \"; \\\\\\\"\n")
 
     # Copy authorized_keys ssh key file to web repo directory
     copy2(ROOT_AUTH_KEYS, WWW_AUTH_KEYS)

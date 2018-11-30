@@ -26,7 +26,7 @@ OS_IMAGES_DIR = gen.get_container_os_images_path() + '/'
 OS_CONFIG_DIR = OS_IMAGES_DIR + 'config/'
 
 HTML_DIR = '/var/www/html/'
-KICKSTARTS_DIR = '/var/lib/cobbler/kickstarts/'
+KICKSTARTS_DIR = '/var/lib/cobbler/templates/'
 SNIPPETS_DIR = '/var/lib/cobbler/snippets/'
 COBBLER_USER = gen.get_cobbler_user()
 COBBLER_PASS = gen.get_cobbler_pass()

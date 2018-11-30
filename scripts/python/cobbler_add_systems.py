@@ -85,7 +85,7 @@ def cobbler_add_systems(cfg_file=None):
             token)
         cobbler_server.modify_system(
             new_system_create,
-            'modify_interface',
+            'modify-interface',
             {
                 "macaddress-eth0": mac_pxe,
                 "ipaddress-eth0": ipv4_pxe,
