@@ -50,8 +50,10 @@ disk=$(echo $disk_list | cut -d' ' -f1)
 
 echo "clearpart --all --initlabel" > /tmp/select-first-disk
 echo "ignoredisk --only-use=$disk" >> /tmp/select-first-disk
-echo "bootloader --location=mbr --boot-drive=$disk" >> /tmp/select-first-disk
-echo "autopart --nohome --nolvm" >> /tmp/select-first-disk
+echo "part prepboot --fstype \"PPC PReP Boot\" --size=10 --ondisk=$disk" >> /tmp/select-first-disk
+echo "part /boot --fstype ext4 --size=1024 --ondisk=$disk --asprimary" >> /tmp/select-first-disk
+echo "part swap --fstype swap --size=32000 --ondisk=$disk" >> /tmp/select-first-disk
+echo "part / --fstype ext4 --grow --size=1 --ondisk=$disk" >> /tmp/select-first-disk
 
 %end
 
