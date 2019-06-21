@@ -73,4 +73,6 @@ echo -e "name={{ http_repo_name }}" >> /etc/yum.repos.d/{{ http_repo_name }}.rep
 echo -e "baseurl=http://{{ http_server }}/{{ http_repo_dir }}/" >> /etc/yum.repos.d/{{ http_repo_name }}.repo
 echo -e "enabled=1" >> /etc/yum.repos.d/{{ http_repo_name }}.repo
 echo -e "gpgcheck=0" >> /etc/yum.repos.d/{{ http_repo_name }}.repo
+# sed -i 's/^%wheel/## %wheel/g' /etc/sudoers
+# sed -i 's/^# %wheel/%wheel/g' /etc/sudoers
 %end
