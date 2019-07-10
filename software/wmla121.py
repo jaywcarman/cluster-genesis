@@ -1699,7 +1699,14 @@ class software(object):
             cmd += '--ask-become-pass '
             prompt_msg = "\nClient password required for privilege escalation"
         # Verification Loop
-        if False:  # Needs work, disabling for now
+        # if False:  # Needs work, disabling for now
+        if get_yesno('Run configuration verification checks on cluster nodes '):
+            ana_ver = re.search(r'(anaconda\d)-\d', self.sw_vars['content_files']
+                                ['anaconda'], re.IGNORECASE).group(1).lower()
+            _set_spectrum_conductor_install_env(self.sw_vars['ansible_inventory'],
+                                                'spark')
+            _set_spectrum_conductor_install_env(self.sw_vars['ansible_inventory'],
+                                                'dli', ana_ver)
             specific_arch = "_" + self.arch if self.arch == 'x86_64' else ""
             validate_tasks = yaml.full_load(open(GEN_SOFTWARE_PATH + f'{self.my_name}'
                                             f'_validate_procedure{specific_arch}.yml'))
