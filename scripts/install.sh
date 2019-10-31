@@ -52,7 +52,7 @@ elif [[ $ID == "rhel" ]]; then
     #     sudo yum -y install syslinux-tftpboot
     # fi
 
-    sudo python36 -m ensurepip --default-pip
+    sudo python3 -m ensurepip --default-pip
 fi
 
 /bin/bash -c "${BASH_SOURCE%/*}/venv_install.sh $PIP_SOURCE"

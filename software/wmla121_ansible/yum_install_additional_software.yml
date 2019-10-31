@@ -32,5 +32,6 @@
         - gettext
         - which
         - zip
-    state: latest
+    skip_broken: yes
+    state: installed
   become: yes

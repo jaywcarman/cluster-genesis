@@ -494,7 +494,9 @@ dependencies_p8:
 - cpp-4.8.5-36.el7_6.2.ppc64le
 - dconf-0.28.0-4.el7.ppc64le
 - dejavu-serif-fonts-2.33-6.el7.noarch
-- elfutils-libelf-devel-0.172-2.el7.ppc64le
+- elfutils-libelf-devel-0.176-2.el7.ppc64le
+- elfutils-libelf-0.176-2.el7.ppc64le
+- elfutils-libs-0.176-2.el7.ppc64le
 - freetype-2.8-12.el7_6.1.ppc64le
 - freetype-devel-2.8-12.el7_6.1.ppc64le
 - gcc-4.8.5-36.el7_6.2.ppc64le
@@ -612,7 +614,9 @@ dependencies_p9:
 - cpp-4.8.5-36.el7.ppc64le
 - dconf-0.28.0-4.el7.ppc64le
 - dejavu-serif-fonts-2.33-6.el7.noarch
-- elfutils-libelf-devel-0.172-2.el7.ppc64le
+- elfutils-libelf-devel-0.176-2.el7.ppc64le
+- elfutils-libelf-0.176-2.el7.ppc64le
+- elfutils-libs-0.176-2.el7.ppc64le
 - freetype-2.8-12.el7_6.1.ppc64le
 - freetype-devel-2.8-12.el7_6.1.ppc64le
 - gcc-4.8.5-36.el7.ppc64le

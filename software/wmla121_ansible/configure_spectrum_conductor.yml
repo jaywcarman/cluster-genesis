@@ -151,7 +151,8 @@
 - name: Install additional dependency packages
   yum:
     name: "{{ packages }}"
-    state: latest
+    state: installed
+    skip_broken: yes
   vars:
     packages:
     - gcc-c++

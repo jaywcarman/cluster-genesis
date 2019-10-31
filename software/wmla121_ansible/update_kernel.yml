@@ -2,7 +2,7 @@
 - name: Load the latest kernel
   yum:
     name: "{{ item }}"
-    state: latest
+    state: installed
 # may need to inckude kernel-devel
   with_items:
     - kernel
