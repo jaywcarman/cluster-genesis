@@ -3,7 +3,6 @@
   yum:
     name: cuda
     state: present
-    skip_broken: yes
   become: yes
   notify: Reboot
 

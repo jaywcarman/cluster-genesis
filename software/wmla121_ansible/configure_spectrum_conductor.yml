@@ -152,7 +152,6 @@
   yum:
     name: "{{ packages }}"
     state: installed
-    skip_broken: yes
   vars:
     packages:
     - gcc-c++
